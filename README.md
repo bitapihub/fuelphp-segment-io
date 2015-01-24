@@ -40,7 +40,7 @@ To run any function, write the following.
 
 ``` $analytics = \Segment\Analytics::instance(); ```
 
-**Set User ID**
+### Set User ID
 
 The anonymous ID is automatically generated when you create the \Segment\Analytics object above, and stored in a session variable. (Part of segment.identity) You have two ways to set the userId parameter so that you'll never have to set it again. You can set it by calling the identify() method, or directly with the set_user_id() method that it relies on when it hasn't been set for that user.
 
@@ -48,7 +48,7 @@ The anonymous ID is automatically generated when you create the \Segment\Analyti
 
 ``` $analytics->set_user_id($user_id); ```
 
-**Page**
+### Page
 
 Segment.io requires at least one page view per page. The Segment code already includes an analytics.page() call which you **must remove** so you don't waste calls to Segment.io. Segment.io for FuelPHP will automatically generate the code for a raw page view only if you do not name your pages by calling the $analytics->page() method.
 
@@ -63,7 +63,7 @@ To aid in making calls to Mix Panel reliably, the JS output automatically calls 
 
 ``` $analytics->page($page_data = array(), $js = true, $js_options = array(), $js_callback	= null); ```
 
-**Alias**
+### Alias
 
 Alias allows you to track anonymous visitors to their new in-system identity. Please note that Mix Panel has a race condition where your events must race against the Mix Panel queue. [Learn more about this issue](https://segment.com/docs/integrations/mixpanel/#alias) and why it's best to alias your customers on the client side. For the same reason, Mix Panel requires you to alias on the client side **before** you alias on the server side if you decide to alias on the server side.
 
@@ -76,7 +76,7 @@ As it's best to alias your customers on the client side, you'll need to send you
 
 ``` $analytics->alias($alias = array(), $js = true, $js_options = array(), $js_callback = null); ```
 
-**Identify**
+### Identify
 
 [Identify your customers](https://segment.com/docs/api/tracking/identify/) through PHP or JS.
 
@@ -87,7 +87,7 @@ As it's best to alias your customers on the client side, you'll need to send you
 
 ``` $analytics->identify($identification = array(), $js = true, $render_safe = false, $js_options = array(), $js_callback = null); ```
 
-**Group**
+### Group
 
 The group() method allows you to connect people with companies, projects, or other group structures, however you define them.
 
@@ -98,7 +98,7 @@ The group() method allows you to connect people with companies, projects, or oth
 
 ``` $analytics->group($group = array(), $js = true, $js_options = array(), $js_callback = null); ```
 
-**Track**
+### Track
 
 Track every move your customers make. O.O Just be sure to let them know that you're doing so in your privacy policy.
 
@@ -110,7 +110,7 @@ Track every move your customers make. O.O Just be sure to let them know that you
 
 ``` $analytics->track($track, $js = true, $js_options = array(), $js_callback = null, $noninteraction = true); ```
 
-**Custom Functions**
+### Custom Functions
 
 You can add custom calls to analytics.js. Use this code to set as many raw JS functions as you'd like.
 
@@ -118,7 +118,7 @@ You can add custom calls to analytics.js. Use this code to set as many raw JS fu
 
 ``` $analytics->custom($custom_js_function); ```
 
-**Render Your JS**
+### Render Your JS
 
 If you've queued JS calls for Analytics.js, you'll need to run the following code to render the output. Each code, with the exception of "Track" may only have one call made. The render function will produce the JS code for every function you've added to the queue, in the following order: page, alias, identify, group, track. If this order does not work for you, specify the order with the parameter shown below, as an array containing the aforementioned list in the proper order. The example shows the default.
 
