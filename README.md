@@ -44,7 +44,7 @@ To run any function, write the following.
 
 The anonymous ID is automatically generated when you create the \Segment\Analytics object above, and stored in a session variable. (Part of segment.identity) You have two ways to set the userId parameter so that you'll never have to set it again. You can set it by calling the identify() method, or directly with the set_user_id() method that it relies on when it hasn't been set for that user.
 
-$user_id - Set the identifier you wish to pass for any methods that rely on the userId parameter.
+**$user_id** - Set the identifier you wish to pass for any methods that rely on the userId parameter.
 
 ``` $analytics->set_user_id($user_id); ```
 
@@ -114,7 +114,7 @@ Track every move your customers make. O.O Just be sure to let them know that you
 
 You can add custom calls to analytics.js. Use this code to set as many raw JS functions as you'd like.
 
-$custom_js_function - Set your JS string here. Technically you can set as many functions as you'd like to in one go as this variable is just an arbitrary string. Call the custom() method multiple times to enqueue more JS functions. 
+**$custom_js_function** - Set your JS string here. Technically you can set as many functions as you'd like to in one go as this variable is just an arbitrary string. Call the custom() method multiple times to enqueue more JS functions. 
 
 ``` $analytics->custom($custom_js_function); ```
 
