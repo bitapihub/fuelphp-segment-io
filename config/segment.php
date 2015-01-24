@@ -31,6 +31,28 @@ return array(
 	/**
 	 * The Segment.io write key
 	 */
-	'write_key'	=> '[YOUR WRITE KEY HERE]'
+	'write_key'	=> '[YOUR WRITE KEY HERE]',
+	
+	/**
+	 * Enter the configuration changes you wish to set for the PHP library.
+	 * Please note that if you enable debugging on PHP, console debugging in JS will also be enabled.
+	 * 
+	 * @link https://segment.com/docs/libraries/php/#configuration
+	 */
+	'configure'	=> array(
+	
+		'consumer'		=> 'socket', // socket, fork_curl, file
+		'debug'			=> false,
+		'ssl'			=> false,
+		//'error_handler'	=> function ($code, $message) {},
+		
+		// fork_curl
+		// 'max_queue_size'	=> 10000,
+		// 'batch_size'		=> 100,
+		
+		// file
+		// 'filename'	=> '/tmp/analytics.log'
+	
+	),
 	
 );
