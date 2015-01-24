@@ -56,10 +56,10 @@ Please note that due to Segment.io's limitations, you will always have a page vi
 
 To aid in making calls to Mix Panel reliably, the JS output automatically calls analytics.flush() after analytics.alias().
 
-$page_data - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#page). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
-$js - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for page() through this package, so further page() calls will replace the previous code. Directly add the analytics.page() calls in your template files for virtual page views. Set it to false to process it server-side.  
-$js_options - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $page_data contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
-$js_callback - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
+**$page_data** - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#page). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
+**$js** - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for page() through this package, so further page() calls will replace the previous code. Directly add the analytics.page() calls in your template files for virtual page views. Set it to false to process it server-side.  
+**$js_options** - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $page_data contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
+**$js_callback** - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
 
 ``` $analytics->page($page_data = array(), $js = true, $js_options = array(), $js_callback	= null); ```
 
@@ -69,10 +69,10 @@ Alias allows you to track anonymous visitors to their new in-system identity. Pl
 
 As it's best to alias your customers on the client side, you'll need to send your in-system identifier to the browser. That could produce a security flaw, especially if you're using a common name for an ID column in your database. For that reason, consider creating a new column in your database exclusively for analytics tracking. Name the new column something a hacker probably won't guess.
 
-$alias - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#alias). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.) You may omit the previousId to use the package generated anonymousId set in the user's session. If you've called the identify() or set_user_id() methods, then you may omit the userId field for both JS and PHP as well. When you set a userId through alias(), the set_user_id() method is also called so that your script stays synchronized.  
-$js - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for alias() through this package, so further alias() calls will replace the previous code. Set it to false to process it server-side.  
-$js_options - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $alias contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
-$js_callback - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
+**$alias** - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#alias). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.) You may omit the previousId to use the package generated anonymousId set in the user's session. If you've called the identify() or set_user_id() methods, then you may omit the userId field for both JS and PHP as well. When you set a userId through alias(), the set_user_id() method is also called so that your script stays synchronized.  
+**$js** - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for alias() through this package, so further alias() calls will replace the previous code. Set it to false to process it server-side.  
+**$js_options** - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $alias contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
+**$js_callback** - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
 
 ``` $analytics->alias($alias = array(), $js = true, $js_options = array(), $js_callback = null); ```
 
@@ -80,10 +80,10 @@ $js_callback - If you'd like to use a JS callback function, specify the exact ra
 
 [Identify your customers](https://segment.com/docs/api/tracking/identify/) through PHP or JS.
 
-$identification - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#identify). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
-$js - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for identify(), so further identify() calls will replace the previous code. Set it to false to process the call server-side.  
-$js_options - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $identification contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
-$js_callback - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
+**$identification** - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#identify). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
+**$js** - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for identify(), so further identify() calls will replace the previous code. Set it to false to process the call server-side.  
+**$js_options** - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $identification contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this to an array.  
+**$js_callback** - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
 
 ``` $analytics->identify($identification = array(), $js = true, $render_safe = false, $js_options = array(), $js_callback = null); ```
 
@@ -91,10 +91,10 @@ $js_callback - If you'd like to use a JS callback function, specify the exact ra
 
 The group() method allows you to connect people with companies, projects, or other group structures, however you define them.
 
-$group - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#group). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
-$js - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for group() through this package, so further group() calls will replace the previous code. Set it to false to process it server-side.  
-$js_options - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $group contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this parameter to an array.  
-$js_callback - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
+**$group** - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#group). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
+**$js** - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may only make one call for group() through this package, so further group() calls will replace the previous code. Set it to false to process it server-side.  
+**$js_options** - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $group contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this parameter to an array.  
+**$js_callback** - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
 
 ``` $analytics->group($group = array(), $js = true, $js_options = array(), $js_callback = null); ```
 
@@ -102,11 +102,11 @@ $js_callback - If you'd like to use a JS callback function, specify the exact ra
 
 Track every move your customers make. O.O Just be sure to let them know that you're doing so in your privacy policy.
 
-$track - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#track). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
-$js - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may may make multiple calls to track(), and each one will be added to the queue in the order you set them. Set this parameter to false to process it server-side.  
-$js_options - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $track contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this parameter to an array.  
-$js_callback - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
-$noninteraction - An interaction with Google Analytics signifies that the user has triggered an event. As we're generating code to load with the page, we're generating non-interaction code, so by default this is set to not be an interaction. Change it to false to send the call as an interaction hit.  
+**$track** - The array of data as specified for the [PHP implementation](https://segment.com/docs/libraries/php/#track). (The JS version will pick out the proper attributes from this array to send through the Analytics.js version.)  
+**$js** - Set this to true to create the JS code for the specified parameters. The resulting code will be queued and ready for the render() method. You may may make multiple calls to track(), and each one will be added to the queue in the order you set them. Set this parameter to false to process it server-side.  
+**$js_options** - Analytics.js allows you to pass options as a parameter. The docs specifically state that the "integrations" object could be an option, so by default, if $track contains said object, then it will appear in the options parameter. You may add extra "integrations" attributes, override them, or add different objects or parameters to the options list by setting this parameter to an array.  
+**$js_callback** - If you'd like to use a JS callback function, specify the exact raw JS code to use for that parameter.  
+**$noninteraction** - An interaction with Google Analytics signifies that the user has triggered an event. As we're generating code to load with the page, we're generating non-interaction code, so by default this is set to not be an interaction. Change it to false to send the call as an interaction hit.  
 
 ``` $analytics->track($track, $js = true, $js_options = array(), $js_callback = null, $noninteraction = true); ```
 
