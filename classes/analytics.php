@@ -31,10 +31,9 @@ class Analytics
 	protected static $instances = array();
 	
 	/**
-	 * @var array $_identity Contains either anonymousId or userId for tracking the user
-	 * @access private
+	 * @var array $identity Contains anonymousId and/or userId for tracking the user
 	 */
-	private $_identity = array();
+	public $identity = array();
 	
 	/**
 	 * @var string $_ga_cookie_id The contents of the _ga cookie for Universal Analytics
@@ -114,11 +113,11 @@ class Analytics
 		// Set the debug mode for JS
 		$this->_js_debug = \Config::get('segment.configure.debug', false);
 		
-		$this->_identity = \Session::get('segment.identity');
-		if (empty($this->_identity)) {
+		$this->identity = \Session::get('segment.identity');
+		if (empty($this->identity)) {
 
-			$this->_identity = array('anonymousId' => $this->_generate_random_id());
-			\Session::set('segment.identity', $this->_identity);
+			$this->identity = array('anonymousId' => $this->_generate_random_id());
+			\Session::set('segment.identity', $this->identity);
 			
 		}
 	}
@@ -136,8 +135,8 @@ class Analytics
 			return;
 			
 		}
-		$this->_identity = array_merge($this->_identity, array('userId' => $user_id));
-		\Session::set('segment.identity', $this->_identity);
+		$this->identity = array_merge($this->identity, array('userId' => $user_id));
+		\Session::set('segment.identity', $this->identity);
 	}
 	
 	/**
@@ -228,18 +227,18 @@ class Analytics
 			
 		}
 		
-		$this->_identity['anonymousId']	= empty($alias['previousId']) ? $this->_identity['anonymousId'] : $alias['previousId'];
-		$this->_identity['userId']		= empty($alias['userId']) ? $this->_identity['userId'] : $alias['userId'];
+		$this->identity['anonymousId']	= empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
+		$this->identity['userId']		= empty($alias['userId']) ? $this->identity['userId'] : $alias['userId'];
 		
 		// We need an anonymousId for PHP based calls.
-		if (empty($this->_identity['anonymousId']) && $js === false) {
+		if (empty($this->identity['anonymousId']) && $js === false) {
 			
 			throw new \FuelException('The previousId must be specified when sending the call through PHP.');
 			
 		}
 		
 		// We always need a userId.
-		if (empty($this->_identity['userId'])) {
+		if (empty($this->identity['userId'])) {
 			
 			throw new \FuelException('The userId must be specified.');
 			
@@ -259,10 +258,10 @@ class Analytics
 		} else {
 			
 			// User ID
-			$js_params[] = "'".$this->_identity['userId']."'";
+			$js_params[] = "'".$this->identity['userId']."'";
 			
 			// Anonymous ID
-			$js_params[] = !empty($this->_identity['anonymousId']) ? "'".$this->_identity['anonymousId']."'" : "null";
+			$js_params[] = !empty($this->identity['anonymousId']) ? "'".$this->identity['anonymousId']."'" : "null";
 			
 			// JS Options
 			$js_params[] = $this->_set_js_options($js_options, $alias);
@@ -301,7 +300,7 @@ class Analytics
 			
 		}
 		
-		$identification = empty($identification) ? $this->_identity : $identification;
+		$identification = empty($identification) ? $this->identity : $identification;
 		
 		/**
 		 * Set this for anywhere in the system that needs access to it. It's already part of $identification,
@@ -313,7 +312,7 @@ class Analytics
 			
 		} else {
 			
-			$identification['anonymousId'] = !empty($identification['anonymousId']) ? $identification['anonymousId'] : $this->_identity['anonymousId'];
+			$identification['anonymousId'] = !empty($identification['anonymousId']) ? $identification['anonymousId'] : $this->identity['anonymousId'];
 			
 		}
 		
@@ -681,13 +680,13 @@ class Analytics
 	{
 		if (empty($data['userId'])) {
 		
-			if (!empty($this->_identity['userId'])) {
+			if (!empty($this->identity['userId'])) {
 					
-				$data['userId'] = $this->_identity['userId'];
+				$data['userId'] = $this->identity['userId'];
 					
 			} else {
 					
-				$data['anonymousId'] = !empty($data['anonymousId']) ? $data['anonymousId'] : $this->_identity['anonymousId'];
+				$data['anonymousId'] = !empty($data['anonymousId']) ? $data['anonymousId'] : $this->identity['anonymousId'];
 					
 			}
 		
