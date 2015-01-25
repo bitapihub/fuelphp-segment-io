@@ -222,23 +222,21 @@ class Analytics
 	{
 		// Don't track a customer if they don't want to be tracked.
 		if ($this->_dnt === true) {
-			
 			return;
-			
 		}
 		
-		$this->identity['anonymousId']	= empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
-		$this->identity['userId']		= empty($alias['userId']) ? $this->identity['userId'] : $alias['userId'];
+		$alias['previousId']	= empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
+		$alias['userId']		= empty($alias['userId']) ? $this->identity['userId'] : $alias['userId'];
 		
 		// We need an anonymousId for PHP based calls.
-		if (empty($this->identity['anonymousId']) && $js === false) {
+		if (empty($alias['previousId']) && $js === false) {
 			
 			throw new \FuelException('The previousId must be specified when sending the call through PHP.');
 			
 		}
 		
 		// We always need a userId.
-		if (empty($this->identity['userId'])) {
+		if (empty($alias['userId'])) {
 			
 			throw new \FuelException('The userId must be specified.');
 			
@@ -258,10 +256,10 @@ class Analytics
 		} else {
 			
 			// User ID
-			$js_params[] = "'".$this->identity['userId']."'";
+			$js_params[] = "'".$alias['userId']."'";
 			
 			// Anonymous ID
-			$js_params[] = !empty($this->identity['anonymousId']) ? "'".$this->identity['anonymousId']."'" : "null";
+			$js_params[] = !empty($alias['previousId']) ? "'".$alias['previousId']."'" : "null";
 			
 			// JS Options
 			$js_params[] = $this->_set_js_options($js_options, $alias);
