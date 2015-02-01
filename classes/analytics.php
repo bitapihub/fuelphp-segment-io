@@ -225,8 +225,19 @@ class Analytics
 			return;
 		}
 		
-		$alias['previousId']	= empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
-		$alias['userId']		= empty($alias['userId']) ? $this->identity['userId'] : $alias['userId'];
+		// Set the previousId
+		$alias['previousId'] = empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
+		
+		// Try to locate the userId. Throw an error if we can't find one.
+		if (empty($alias['userId'])) {
+			
+			if (empty($this->identity['userId'])) {
+				throw new \FuelException('The userId must be specified.');
+			}
+			
+			$alias['userId'] = $this->identity['userId'];
+			
+		}
 		
 		// We need an anonymousId for PHP based calls.
 		if (empty($alias['previousId']) && $js === false) {
