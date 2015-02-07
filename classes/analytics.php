@@ -591,6 +591,8 @@ class Analytics
 			$array = array_merge(array($key => $value), $array);
 			
 		}
+		
+		return $array;
 	}
 	
 	/**
