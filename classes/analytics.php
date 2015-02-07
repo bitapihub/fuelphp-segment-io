@@ -149,10 +149,10 @@ class Analytics
 	 * @param string $js_callback	If you want to use a callback function with "page," specify it here.
 	 */
 	public function page(
-		$page_data		= array(),
-		$js				= true,
-		$js_options		= array(),
-		$js_callback	= null
+		array $page_data	= array(),
+		$js					= true,
+		array $js_options	= array(),
+		$js_callback		= null
 	){
 		// Don't track a customer if they don't want to be tracked.
 		if ($this->_dnt === true) {
@@ -218,7 +218,7 @@ class Analytics
 	 * 								options get specified in $alias, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "alias," specify it here.
 	 */
-	public function alias($alias = array(), $js = true, $js_options = array(), $js_callback = null)
+	public function alias(array $alias = array(), $js = true, array $js_options = array(), $js_callback = null)
 	{
 		// Don't track a customer if they don't want to be tracked.
 		if ($this->_dnt === true) {
@@ -296,10 +296,10 @@ class Analytics
 	 * @param string $js_callback	If you want to use a callback function with "identify," specify it here.
 	 */
 	public function identify(
-		$identification		= array(),
-		$js					= true,
-		$js_options			= array(),
-		$js_callback		= null
+		array $identification	= array(),
+		$js						= true,
+		array $js_options		= array(),
+		$js_callback			= null
 	)
 	{
 		// Don't track a customer if they don't want to be tracked.
@@ -350,11 +350,22 @@ class Analytics
 		}
 	}
 	
+	/**
+	 * Place people in groups, such as teams and companies.
+	 * 
+	 * @param array $group			The array of group data for Segment's \Analytics::group()
+	 * @param bool $js				Set this to generate the content as JS once you run render()
+	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
+	 * 								options get specified in $group, but may be overridden here.
+	 * @param string $js_callback	If you want to use a callback function with "group," specify it here.
+	 * 
+	 * @throws \FuelException
+	 */
 	public function group(
-		$group,
-		$js				= true,
-		$js_options		= array(),
-		$js_callback	= null
+		array $group,
+		$js					= true,
+		array $js_options	= array(),
+		$js_callback		= null
 	)
 	{
 		// Don't track a customer if they don't want to be tracked.
@@ -401,12 +412,24 @@ class Analytics
 		}
 	}
 	
+	/**
+	 * Track what people are doing on your website.
+	 * 
+	 * @param array $track				The array of group data for Segment's \Analytics::track()
+	 * @param bool $js					Set this to generate the content as JS once you run render()
+	 * @param array $js_options			The array of options to set for the JS "options" parameter - "integrations"
+	 * 									options get specified in $track, but may be overridden here.
+	 * @param string $js_callback		If you want to use a callback function with "track," specify it here.
+	 * @param bool $noninteraction		Set this variable to true to tell Google Analytics that the event is a
+	 * 									non-interaction event.
+	 * @throws \FuelException
+	 */
 	public function track(
-		$track,
-		$js				= true,
-		$js_options		= array(),
-		$js_callback	= null,
-		$noninteraction	= true
+		array $track,
+		$js					= true,
+		array $js_options	= array(),
+		$js_callback		= null,
+		$noninteraction		= true
 	)
 	{
 		// Don't track a customer if they don't want to be tracked.
@@ -492,7 +515,7 @@ class Analytics
 	 * 
 	 * @return string The rendered JS content
 	 */
-	public function render($order = array('page', 'alias', 'identify', 'group', 'track', 'custom'), $auto_page_view = true)
+	public function render(array $order = array('page', 'alias', 'identify', 'group', 'track', 'custom'), $auto_page_view = true)
 	{
 		// Don't track a customer if they don't want to be tracked.
 		if ($this->_dnt === true) {
@@ -559,10 +582,8 @@ class Analytics
 	 * @param string $key	The key to set the value on
 	 * @param string $value	The value to set for the key
 	 * @param array $array	The array to perform the operation on
-	 * 
-	 * @return array The completed array, with or without the new element
 	 */
-	private function _add_element($key, $value, $array)
+	private function _add_element($key, $value, array $array)
 	{
 		if (!empty($value)) {
 			
@@ -570,8 +591,6 @@ class Analytics
 			$array = array_merge(array($key => $value), $array);
 			
 		}
-		
-		return $array;
 	}
 	
 	/**
@@ -654,6 +673,7 @@ class Analytics
 			
 			$context_data['context'] = array_merge_recursive($context_data['context'], $php_context);
 		
+			// Don't use \Arr::set() since that will always add the keys.
 			$context['campaign'] = $this->_add_element('name', \Input::get('utm_campaign'), array());
 			$context['campaign'] = $this->_add_element('source', \Input::get('utm_source'), $context['campaign']);
 			$context['campaign'] = $this->_add_element('medium', \Input::get('utm_medium'), $context['campaign']);
@@ -685,7 +705,7 @@ class Analytics
 	 * 
 	 * @return array The $data array with the identity values added as needed.
 	 */
-	private function _set_identity($data)
+	private function _set_identity(array $data)
 	{
 		if (empty($data['userId'])) {
 		
@@ -731,7 +751,7 @@ class Analytics
 	 * 
 	 * @return string The JSON string ready for use in the options parameter.
 	 */
-	private function _set_js_options($js_options, $data)
+	private function _set_js_options(array $js_options, array $data)
 	{
 		
 		// Nothing by default
