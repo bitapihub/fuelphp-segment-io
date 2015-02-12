@@ -93,13 +93,6 @@ class Analytics
 		// Respect the customer's "Do Not Track" headers.
 		$this->_dnt = \Input::server('HTTP_DNT', 0) == 1 ? true : false;
 		
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			
-			return;
-			
-		}
-		
 		\Config::load('segment', true);
 		\Analytics::init(\Config::get('segment.write_key'), \Config::get('segment.configure'), array());
 		
@@ -154,13 +147,6 @@ class Analytics
 		array $js_options	= array(),
 		$js_callback		= null
 	){
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			
-			return;
-			
-		}
-		
 		// Set the userId or anonymousId if userId is missing.
 		$page_data = $this->_set_identity($page_data);
 
@@ -220,11 +206,6 @@ class Analytics
 	 */
 	public function alias(array $alias = array(), $js = true, array $js_options = array(), $js_callback = null)
 	{
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			return;
-		}
-		
 		// Set the previousId
 		$alias['previousId'] = empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
 		
@@ -432,13 +413,6 @@ class Analytics
 		$noninteraction		= true
 	)
 	{
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			
-			return;
-			
-		}
-		
 		// We need an event.
 		if (empty($track['event'])) {
 			
@@ -498,13 +472,6 @@ class Analytics
 	 */
 	public function custom($raw_function_code)
 	{
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			
-			return;
-			
-		}
-		
 		$this->_js_scripts['custom'][] = $raw_function_code;
 	}
 	
@@ -517,13 +484,6 @@ class Analytics
 	 */
 	public function render(array $order = array('page', 'alias', 'identify', 'group', 'track', 'custom'), $auto_page_view = true)
 	{
-		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
-			
-			return;
-			
-		}
-		
 		// Initialize the variable.
 		$output = null;
 		
