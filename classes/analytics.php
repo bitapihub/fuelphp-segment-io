@@ -151,12 +151,12 @@ class Analytics
 		$page_data = $this->_set_identity($page_data);
 
 		// Add the context data.
-		$page_data = array_merge_recursive($this->_get_context($js), $page_data);
+		$page_data = \Arr::merge($this->_get_context($js), $page_data);
 		
 		if ($js !== true) {
 			
 			// JS sets the defaults on its own, so we do this only for PHP.
-			$page_data = array_merge_recursive($this->_get_page_properties(), $page_data);
+			$page_data = \Arr::merge($this->_get_page_properties(), $page_data);
 			\Analytics::page($page_data);
 			
 		} else {
@@ -306,7 +306,7 @@ class Analytics
 			
 		}
 		
-		$identification = array_merge_recursive($this->_get_context($js), $identification);
+		$identification = \Arr::merge($this->_get_context($js), $identification);
 		
 		if ($js !== true) {
 			
@@ -367,7 +367,7 @@ class Analytics
 		$group = $this->_set_identity($group);
 		
 		// Add the context data.
-		$group = array_merge_recursive($this->_get_context($js), $group);
+		$group = \Arr::merge($this->_get_context($js), $group);
 		
 		if ($js !== true) {
 			
@@ -424,7 +424,7 @@ class Analytics
 		$track = $this->_set_identity($track);
 		
 		// Add the context data.
-		$track = array_merge_recursive($this->_get_context($js), $track);
+		$track = \Arr::merge($this->_get_context($js), $track);
 		
 		// If we're processing noninteractive calls through Google Analytics...
 		if ($noninteraction === true) {
@@ -435,7 +435,7 @@ class Analytics
 					
 			} else {
 					
-				$track['properties'] = array_merge_recursive(array('nonInteraction' => 1), $track['properties']);
+				$track['properties'] = \Arr::merge(array('nonInteraction' => 1), $track['properties']);
 					
 			}
 		
@@ -558,22 +558,10 @@ class Analytics
 	/**
 	 * Get the current locale for the user
 	 * 
-	 * @return string The locale the user requested, or the default system language
+	 * @return string The default system language
 	 */
 	private function _get_locale()
 	{
-		foreach (\Agent::languages() as $key => $val) {
-	
-			// Is it a locale?
-			if (substr_count($val, '-') || substr_count($val, '_')) {
-	
-				return $val;
-	
-			}
-	
-		}
-		
-		// Use the system default.
 		return \Config::get('locale');
 	}
 	
@@ -613,12 +601,6 @@ class Analytics
 				
 				'locale'	=> $this->_get_locale(),
 				'timezone'	=> date('e'),
-				'os'		=> array(
-		
-					'name'		=> \Agent::platform(),
-					'version'	=> \Agent::property('platform_version'),
-		
-				)
 				
 			),
 			
@@ -633,7 +615,7 @@ class Analytics
 				
 			);
 			
-			$context_data['context'] = array_merge_recursive($context_data['context'], $php_context);
+			$context_data['context'] = \Arr::merge($context_data['context'], $php_context);
 		
 			// Don't use \Arr::set() since that will always add the keys.
 			$context['campaign'] = $this->_add_element('name', \Input::get('utm_campaign'), array());
@@ -644,7 +626,7 @@ class Analytics
 			
 			if (!empty($context['campaign'])) {
 					
-				$context_data['context'] = array_merge_recursive($context_data['context'], $context);
+				$context_data['context'] = \Arr::merge($context_data['context'], $context);
 					
 			}
 			
@@ -722,21 +704,21 @@ class Analytics
 		// User specified options
 		if (!empty($js_options)) {
 			
-			$return = array_merge_recursive($return, $js_options);
+			$return = \Arr::merge($return, $js_options);
 			
 		}
 		
 		// Integrations
 		if (!empty($data['integrations'])) {
 			
-			$return = array_merge_recursive(array('integrations' => (array)$data['integrations']), $return);
+			$return = \Arr::merge(array('integrations' => (array)$data['integrations']), $return);
 			
 		}
 		
 		// Context data
 		if (!empty($data['context'])) {
 			
-			$return = array_merge_recursive(array('context' => (array)$data['context']), $return);
+			$return = \Arr::merge(array('context' => (array)$data['context']), $return);
 			
 		}
 		
