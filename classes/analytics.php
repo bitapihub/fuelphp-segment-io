@@ -211,27 +211,7 @@ class Analytics
 		
 		// Try to locate the userId. Throw an error if we can't find one.
 		if (empty($alias['userId'])) {
-			
-			if (empty($this->identity['userId'])) {
-				throw new \FuelException('The userId must be specified.');
-			}
-			
 			$alias['userId'] = $this->identity['userId'];
-			
-		}
-		
-		// We need an anonymousId for PHP based calls.
-		if (empty($alias['previousId']) && $js === false) {
-			
-			throw new \FuelException('The previousId must be specified when sending the call through PHP.');
-			
-		}
-		
-		// We always need a userId.
-		if (empty($alias['userId'])) {
-			
-			throw new \FuelException('The userId must be specified.');
-			
 		}
 		
 		// Be sure to keep things synchronized.
@@ -339,8 +319,6 @@ class Analytics
 	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
 	 * 								options get specified in $group, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "group," specify it here.
-	 * 
-	 * @throws \FuelException
 	 */
 	public function group(
 		array $group,
@@ -353,13 +331,6 @@ class Analytics
 		if ($this->_dnt === true) {
 			
 			return;
-			
-		}
-		
-		// We need a groupId.
-		if (empty($group['groupId'])) {
-			
-			throw new \FuelException('groupId must be set for this call.');
 			
 		}
 		
@@ -403,7 +374,6 @@ class Analytics
 	 * @param string $js_callback		If you want to use a callback function with "track," specify it here.
 	 * @param bool $noninteraction		Set this variable to true to tell Google Analytics that the event is a
 	 * 									non-interaction event.
-	 * @throws \FuelException
 	 */
 	public function track(
 		array $track,
@@ -413,13 +383,6 @@ class Analytics
 		$noninteraction		= true
 	)
 	{
-		// We need an event.
-		if (empty($track['event'])) {
-			
-			throw new \FuelException('"event" must be set for this call.');
-			
-		}
-		
 		// Set the userId or anonymousId if userId is missing.
 		$track = $this->_set_identity($track);
 		
