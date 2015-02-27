@@ -55,8 +55,9 @@ class Analytics
 	
 	/**
 	 * @var bool If the browser's "Do Not Track" header is set, we disable all analytics operations.
+	 * @access protected
 	 */
-	private $_dnt = false;
+	protected $dnt = false;
 	
 	/**
 	 * Pull an instance out of thin air. If the named instance does not exist, it will be created and returned.
@@ -91,7 +92,7 @@ class Analytics
 	public function __construct()
 	{
 		// Respect the customer's "Do Not Track" headers.
-		$this->_dnt = \Input::server('HTTP_DNT', 0) == 1 ? true : false;
+		$this->dnt = \Input::server('HTTP_DNT', 0) == 1 ? true : false;
 		
 		\Config::load('segment', true);
 		\Analytics::init(\Config::get('segment.write_key'), \Config::get('segment.configure'), array());
@@ -123,12 +124,12 @@ class Analytics
 	public function set_user_id($user_id)
 	{
 		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
+		if ($this->dnt === true) {
 			
 			return;
 			
 		}
-		$this->identity = array_merge($this->identity, array('userId' => $user_id));
+		$this->identity['userId'] = $user_id;
 		\Session::set('segment.identity', $this->identity);
 	}
 	
@@ -140,6 +141,8 @@ class Analytics
 	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
 	 * 								options get specified in $page_data, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "page," specify it here.
+	 * 
+	 * @return mixed True or false depending on if the PHP version succeeded, or the JS code if we compiled the JS code
 	 */
 	public function page(
 		array $page_data	= array(),
@@ -148,7 +151,7 @@ class Analytics
 		$js_callback		= null
 	){
 		// Set the userId or anonymousId if userId is missing.
-		$page_data = $this->_set_identity($page_data);
+		$this->_set_identity($page_data);
 
 		// Add the context data.
 		$page_data = \Arr::merge($this->_get_context($js), $page_data);
@@ -157,7 +160,7 @@ class Analytics
 			
 			// JS sets the defaults on its own, so we do this only for PHP.
 			$page_data = \Arr::merge($this->_get_page_properties(), $page_data);
-			\Analytics::page($page_data);
+			return \Analytics::page($page_data);
 			
 		} else {
 			
@@ -183,15 +186,14 @@ class Analytics
 			 * The render() method will always generate the analytics.page() call, so we don't set that
 			 * here.
 			 * 
-			 * @todo Find a scalable way to check this.
+			 * @todo Find a clean, scalable way to check this.
 			 */
 			if ($js_output !== 'analytics.page(null,null,{},{},null);') {
 
 				// Add it to the queue.
-				$this->_js_scripts['page'] = $js_output;
+				return $this->_js_scripts['page'] = $js_output;
 				
 			}
-			
 		}
 	}
 	
@@ -203,13 +205,15 @@ class Analytics
 	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
 	 * 								options get specified in $alias, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "alias," specify it here.
+	 * 
+	 * @return mixed True or false depending on if the PHP version succeeded, or the JS code if we compiled the JS code
 	 */
 	public function alias(array $alias = array(), $js = true, array $js_options = array(), $js_callback = null)
 	{
 		// Set the previousId
 		$alias['previousId'] = empty($alias['previousId']) ? $this->identity['anonymousId'] : $alias['previousId'];
 		
-		// Try to locate the userId. Throw an error if we can't find one.
+		// Try to locate the userId.
 		if (empty($alias['userId'])) {
 			$alias['userId'] = $this->identity['userId'];
 		}
@@ -223,7 +227,7 @@ class Analytics
 		
 		if ($js !== true) {
 			
-			\Analytics::alias($alias);
+			return \Analytics::alias($alias);
 			
 		} else {
 			
@@ -240,7 +244,7 @@ class Analytics
 			$js_params[] = !empty($js_callback) ? $js_callback : 'null';
 
 			// Add it to the queue.
-			$this->_js_scripts['alias'] = 'analytics.alias('.implode(',', $js_params).');analytics.flush();';
+			return $this->_js_scripts['alias'] = 'analytics.alias('.implode(',', $js_params).');analytics.flush();';
 			
 		}
 	}
@@ -255,6 +259,8 @@ class Analytics
 	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
 	 * 								options get specified in $identification, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "identify," specify it here.
+	 * 
+	 * @return mixed True or false depending on if the PHP version succeeded, or the JS code if we compiled the JS code
 	 */
 	public function identify(
 		array $identification	= array(),
@@ -264,13 +270,13 @@ class Analytics
 	)
 	{
 		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
+		if ($this->dnt === true) {
 			
 			return;
 			
 		}
 		
-		$identification = empty($identification) ? $this->identity : $identification;
+		$identification['userId'] = empty($identification['userId']) ? $this->identity['userId'] : $identification['userId'];
 		
 		/**
 		 * Set this for anywhere in the system that needs access to it. It's already part of $identification,
@@ -290,7 +296,7 @@ class Analytics
 		
 		if ($js !== true) {
 			
-			\Analytics::identify($identification);
+			return \Analytics::identify($identification);
 			
 		} else {
 			
@@ -307,7 +313,7 @@ class Analytics
 			$js_params[] = !empty($js_callback) ? $js_callback : "null";
 
 			// Add it to the queue.
-			$this->_js_scripts['identify'] = 'analytics.identify('.implode(',', $js_params).');';
+			return $this->_js_scripts['identify'] = 'analytics.identify('.implode(',', $js_params).');';
 		}
 	}
 	
@@ -319,6 +325,8 @@ class Analytics
 	 * @param array $js_options		The array of options to set for the JS "options" parameter - "integrations"
 	 * 								options get specified in $group, but may be overridden here.
 	 * @param string $js_callback	If you want to use a callback function with "group," specify it here.
+	 * 
+	 * @return mixed True or false depending on if the PHP version succeeded, or the JS code if we compiled the JS code
 	 */
 	public function group(
 		array $group,
@@ -328,21 +336,21 @@ class Analytics
 	)
 	{
 		// Don't track a customer if they don't want to be tracked.
-		if ($this->_dnt === true) {
+		if ($this->dnt === true) {
 			
 			return;
 			
 		}
 		
 		// Set the userId or anonymousId if userId is missing.
-		$group = $this->_set_identity($group);
+		$this->_set_identity($group);
 		
 		// Add the context data.
 		$group = \Arr::merge($this->_get_context($js), $group);
 		
 		if ($js !== true) {
 			
-			\Analytics::group($group);
+			return \Analytics::group($group);
 			
 		} else {
 			
@@ -359,7 +367,7 @@ class Analytics
 			$js_params[] = !empty($js_callback) ? $js_callback : "null";
 
 			// Add it to the queue.
-			$this->_js_scripts['group'] = "analytics.group(".implode(',', $js_params).");";
+			return $this->_js_scripts['group'] = "analytics.group(".implode(',', $js_params).");";
 			
 		}
 	}
@@ -374,6 +382,8 @@ class Analytics
 	 * @param string $js_callback		If you want to use a callback function with "track," specify it here.
 	 * @param bool $noninteraction		Set this variable to true to tell Google Analytics that the event is a
 	 * 									non-interaction event.
+	 * 
+	 * @return mixed True or false depending on if the PHP version succeeded, or the JS code if we compiled the JS code
 	 */
 	public function track(
 		array $track,
@@ -384,7 +394,7 @@ class Analytics
 	)
 	{
 		// Set the userId or anonymousId if userId is missing.
-		$track = $this->_set_identity($track);
+		$this->_set_identity($track);
 		
 		// Add the context data.
 		$track = \Arr::merge($this->_get_context($js), $track);
@@ -394,7 +404,7 @@ class Analytics
 		
 			if (empty($track['properties'])) {
 					
-				$track['properties'] = array('nonInteraction' => 1);
+				$track['properties']['nonInteraction'] = 1;
 					
 			} else {
 					
@@ -406,7 +416,7 @@ class Analytics
 		
 		if ($js !== true) {
 			
-			\Analytics::track($track);
+			return \Analytics::track($track);
 			
 		} else {
 			
@@ -423,7 +433,7 @@ class Analytics
 			$js_params[] = !empty($js_callback) ? $js_callback : "null";
 			
 			// Add it to the queue.
-			$this->_js_scripts['track'][] = "analytics.track(".implode(',', $js_params).");";
+			return $this->_js_scripts['track'][] = "analytics.track(".implode(',', $js_params).");";
 			
 		}
 	}
@@ -432,10 +442,12 @@ class Analytics
 	 * Create raw function entries
 	 * 
 	 * @param string $raw_function_code The raw JS function to add to the queue
+	 * 
+	 * @return mixed The JS code originally sent
 	 */
 	public function custom($raw_function_code)
 	{
-		$this->_js_scripts['custom'][] = $raw_function_code;
+		return $this->_js_scripts['custom'][] = $raw_function_code;
 	}
 	
 	/**
@@ -537,7 +549,7 @@ class Analytics
 	{
 		$properties_data['properties'] = array(
 			
-			'url'		=> \Uri::main(),
+			'url'		=> \Uri::base().'SEGMENT_PACKAGE_NO_URL_SET',
 			'referrer'	=> \Input::referrer(),
 			'path'		=> '/'.\Uri::string()
 			
@@ -545,6 +557,14 @@ class Analytics
 			// 'title'		=> '',
 			
 		);
+		
+		/*
+		 * Fix: When \Request::main() is false, \Uri::main() tryies to get a property of the non-object
+		 * \Request::main().
+		 */
+		if (\Request::main() instanceof \Request) {
+			$properties_data['properties']['url'] = \Uri::main();
+		}
 		
 		return $properties_data;
 	}
@@ -612,7 +632,7 @@ class Analytics
 	 * 
 	 * @return array The $data array with the identity values added as needed.
 	 */
-	private function _set_identity(array $data)
+	private function _set_identity(array &$data)
 	{
 		if (empty($data['userId'])) {
 		
@@ -627,8 +647,6 @@ class Analytics
 			}
 		
 		}
-		
-		return $data;
 	}
 	
 	/**
@@ -686,7 +704,7 @@ class Analytics
 		}
 		
 		// Keep the anonymousId synchronized between JS, and PHP.
-		$return = $this->_set_identity($return);
+		$this->_set_identity($return);
 		
 		return json_encode($return);
 	}
