@@ -25,13 +25,12 @@ Prerequisites
 Installation and Configuration
 ------------------------------
 
-1. Download the sources to your fuel/packages directory. (fuel/packages/segment)
+1. Edit your composer.json file in your FuelPHP root directory and add the following line to your "require" section.
+``` "bitapihub/fuelphp-segment-io": "master" ```
 2. Install the Analytics.js code as described in the [Segment.io documentation](https://segment.com/docs/libraries/analytics.js/quickstart/). Add the "flush" token to the analytics.methods list in the snippet. If you intend to use debug mode, be sure to add the "debug" token to the list as well.
-3. Edit your composer.json file in your FuelPHP root directory and add the following line to your "require" section.
-``` "segmentio/analytics-php": "master" ```
-4. Copy the segment/config/segment.php configuration file to your APPPATH/config directory and edit your settings there.
-5. Edit your config.php and add "segment" to the list of packages to autoload, or use \Package::load('segment'); to load it in real time.
-6. Create a template variable for the $analytics->render() method described below. Make sure the variable in your template appears **after** your Analytics.js code snippet.
+3. Copy the segment/config/segment.php configuration file to your APPPATH/config directory and edit your settings there.
+4. Edit your config.php and add "segment" to the list of packages to autoload, or use \Package::load('segment'); to load it in real time.
+5. Create a template variable for the $analytics->render() method described below. Make sure the variable in your template appears **after** your Analytics.js code snippet.
 
 Usage
 -----
