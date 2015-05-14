@@ -1,8 +1,8 @@
 {
-	"name": "BitAPIHub/fuelphp-segment-io",
+	"name": "bitapihub/fuelphp-segment-io",
 	"description" : "FuelPHP 1.7.2 Segment.io Package",
 	"type": "fuel-package",
-	"homepage": "https://github.com/BitAPIHub/fuelphp-segment-io",
+	"homepage": "https://github.com/bitapihub/fuelphp-segment-io",
 	"license": "Apache 2.0",
 	"authors": [
 		{
